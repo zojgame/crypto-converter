@@ -1,6 +1,9 @@
 import { useState } from "react";
 import Selector from "./components/Selector";
 import { Item } from "./types/Item";
+import Button from "./components/Button";
+import ArrowsRightLeft from "./icons/ArrowsRightLeftIcon";
+import CrossIcon from "./icons/CrossIcon";
 
 const items: Item[] = [
   {
@@ -22,24 +25,36 @@ const items: Item[] = [
 
 function App() {
   const [firstItemIndex, setFirstItemIndex] = useState(0);
-  const [firstValue, setFirstValue] = useState<number | null>(null);
+  const [secondItemIndex, setSecondItemIndex] = useState(0);
+  const [firstValue, setFirstValue] = useState<string | undefined>(undefined);
+  const [secondValue, setSecondValue] = useState<string | undefined>(undefined);
 
   const handleOnFirstItemSelect = (itemIndex: number) => {
     setFirstItemIndex(itemIndex);
   };
 
+  const handleOnSecondItemSelect = (itemIndex: number) => {
+    setSecondItemIndex(itemIndex);
+  };
+
   const handleOnFirstInputChange = (
-    event: React.KeyboardEvent<HTMLInputElement>
-    // event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const value = event.target;
-    console.log("value", (value as HTMLInputElement).value);
-    if (Number.isNaN(Number(value))) {
-      // event.preventDefault();
-    } else {
-      const number = Number(value);
-      setFirstValue(number);
+    const inputValue = event.target.value;
+    setFirstValue(inputValue);
+    if (inputValue === "") {
+      setSecondValue(undefined);
+      setFirstValue(undefined);
     }
+  };
+
+  const handleOnConvertClick = () => {
+    setSecondValue("2");
+  };
+
+  const handleOnClearClick = () => {
+    setFirstValue(undefined);
+    setSecondValue(undefined);
   };
 
   return (
@@ -52,12 +67,20 @@ function App() {
           onSelect={handleOnFirstItemSelect}
           value={firstValue}
         />
-        {/* <Selector
+        {/* <ConvertButton onClick={handleOnConvertClick} /> */}
+        <Button onClick={handleOnConvertClick} title={"Конвертировать"}>
+          <ArrowsRightLeft />
+        </Button>
+        <Selector
           items={items}
-          selectedItem={items[firstItemIndex]}
-          onSelect={handleOnFirstItemSelect}
+          selectedItem={items[secondItemIndex]}
+          onSelect={handleOnSecondItemSelect}
           isReadonly
-        /> */}
+          value={secondValue}
+        />
+        <Button onClick={handleOnClearClick} title={"Очистить поля"}>
+          <CrossIcon />
+        </Button>
       </div>
     </div>
   );

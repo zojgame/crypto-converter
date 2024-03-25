@@ -7,9 +7,8 @@ interface ISelectorProps {
   selectedItem: Item;
   onSelect: (itemIndex: number) => void;
   isReadonly?: boolean;
-  value: number | null;
-  onChange: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-  // onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  value: string | undefined;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Selector = ({
@@ -18,6 +17,7 @@ const Selector = ({
   onSelect,
   value,
   onChange,
+  isReadonly = false,
 }: ISelectorProps) => {
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const selectorRef = useRef(null);
@@ -35,29 +35,37 @@ const Selector = ({
     setIsSelectorOpen((prev) => !prev);
   };
 
+  const handleOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === ".") {
+      event.preventDefault();
+    }
+  };
   useOnClickOutside(selectorRef, handleClickOutside);
 
   return (
     <div className="flex">
       <label className="relative cursor-text">
         <input
-          // onChange={onChange}
-          // onChange={(e) => e.preventDefault()}
-          onKeyDown={onChange}
-          defaultValue={value ? value : ""}
-          type="text"
+          onKeyDown={handleOnKeyDown}
+          readOnly={isReadonly}
+          type="number"
+          onChange={onChange}
+          defaultValue={value}
           className="px-[19px] w-[200px] h-[45px] rounded-s-[10px] focus:outline-none peer/name hover:border hover:border-[#0078EE] transition-all duration-150"
         />
-        <p
-          className={`${
-            value ? "opacity-0" : "opacity-100"
-          } select-none absolute text-[#ADB6BF] text-[14px] translate-x-[19px] translate-y-[-34.5px] peer-focus/name:translate-y-[-44.0px] peer-focus/name:text-[12px] transition-all duration-150 `}
-        >
-          Введите количество
-        </p>
+        {!isReadonly && (
+          <p
+            className={`${
+              value ? "opacity-0" : "opacity-100"
+            } select-none absolute text-[#ADB6BF] text-[14px] translate-x-[19px] translate-y-[-34.5px] peer-focus/name:translate-y-[-44.0px] peer-focus/name:text-[12px] transition-all duration-150 `}
+          >
+            Введите количество
+          </p>
+        )}
       </label>
       <div className="relative" ref={selectorRef}>
-        <div
+        <button
+          title="Выбрать валюту"
           className="h-[45px] bg-white  rounded-e-[10px] border boder-l cursor-pointer hover:border-[#0078EE] transition-all duration-150 select-none flex flex-col justify-center items-center"
           onClick={handleOnSelectorClick}
         >
@@ -73,7 +81,7 @@ const Selector = ({
             ></div>
           </div>
           <div className="font-bold text-[10px]">{selectedItem.value}</div>
-        </div>
+        </button>
         <div
           className={`absolute w-full left-0 top-[calc(100%+2px)] bg-white rounded-[10px] flex flex-col justify-center items-center transition-all select-none cursor-pointer`}
           style={{
@@ -84,7 +92,7 @@ const Selector = ({
           {items.map((item, index) => (
             <div
               onClick={() => handleOnItemClick(index)}
-              className={`flex justify-center items-center py-4 gap-2 transition-all duration-300 border-t first:border-t-0 w-full group`}
+              className="flex justify-center items-center py-4 gap-2 transition-all duration-300 border-t first:border-t-0 w-full group"
               key={item.id}
             >
               <div className="w-3 h-3 flex justify-center items-center group-hover:scale-105 transition-all ease-in-out">
