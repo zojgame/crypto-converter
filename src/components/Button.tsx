@@ -9,7 +9,7 @@ const Button = ({ onClick, children, title }: IButtonProps) => {
     <button
       title={title}
       onClick={onClick}
-      className="bg-white px-5 border hover:border-[#0078EE] transition-all duration-150 rounded-[10px] hover:text-[#0078EE]"
+      className="bg-white px-5 border hover:border-[#0078EE] transition-all duration-150 rounded-[10px] hover:text-[#0078EE] min-h-[45px]"
     >
       {children}
     </button>
