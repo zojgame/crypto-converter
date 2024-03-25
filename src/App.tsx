@@ -4,6 +4,8 @@ import { Item } from "./types/Item";
 import Button from "./components/Button";
 import ArrowsRightLeft from "./icons/ArrowsRightLeftIcon";
 import CrossIcon from "./icons/CrossIcon";
+import { getSymbolPrice } from "./api/binanceApi";
+import { DataRequest } from "./types/DataRequest";
 
 const items: Item[] = [
   {
@@ -22,6 +24,9 @@ const items: Item[] = [
     value: "USDT",
   },
 ];
+
+const calculatePrice = (coinCount: number, coinRate: number) =>
+  coinCount * coinRate;
 
 function App() {
   const [firstItemIndex, setFirstItemIndex] = useState(0);
@@ -42,14 +47,21 @@ function App() {
   ) => {
     const inputValue = event.target.value;
     setFirstValue(inputValue);
-    if (inputValue === "") {
-      setSecondValue(undefined);
-      setFirstValue(undefined);
-    }
   };
 
   const handleOnConvertClick = () => {
-    setSecondValue("2");
+    const firstSymbol = items[firstItemIndex].value;
+    const secondSymbol = items[secondItemIndex].value;
+    const wholeSymbol = `${firstSymbol}${secondSymbol}`;
+    getSymbolPrice(wholeSymbol).then((data: DataRequest) => {
+      const coinRate = Number(data.price);
+      const firstCoinValue = Number(firstValue);
+      const secondCoinValue = calculatePrice(
+        coinRate,
+        firstCoinValue
+      ).toString();
+      setSecondValue(secondCoinValue);
+    });
   };
 
   const handleOnClearClick = () => {

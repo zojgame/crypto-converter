@@ -1,8 +1,9 @@
 import { URL_SYMBOL_PRICE_API } from "./urls"
 
-const getSymbolPrice = (symbol: string) => {
+const getSymbolPrice = async (symbol: string) => {
     const url = `${URL_SYMBOL_PRICE_API}?symbol=${symbol}`
-    const symbolPrice = fetch(url);
+    const result = await fetch(url);
+    const symbolPrice = await result.json()
 
     return symbolPrice
 }
