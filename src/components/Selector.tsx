@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 import { Item } from "../types/Item";
 
@@ -7,7 +7,7 @@ interface ISelectorProps {
   selectedItem: Item;
   onSelect: (itemIndex: number) => void;
   isReadonly?: boolean;
-  value: string | undefined;
+  value: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -21,6 +21,7 @@ const Selector = ({
 }: ISelectorProps) => {
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const selectorRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleOnItemClick = (index: number) => {
     onSelect(index);
@@ -40,18 +41,25 @@ const Selector = ({
       event.preventDefault();
     }
   };
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.value = value;
+    }
+  }, [value]);
   useOnClickOutside(selectorRef, handleClickOutside);
 
   return (
     <div className="flex">
       <label className="relative cursor-text">
         <input
+          ref={inputRef}
           onKeyDown={handleOnKeyDown}
           readOnly={isReadonly}
           type="number"
           onChange={onChange}
-          defaultValue={value}
-          className="px-[19px] w-[200px] h-[45px] rounded-s-[10px] focus:outline-none peer/name hover:border hover:border-[#0078EE] transition-all duration-150"
+          defaultValue={value ? value : ""}
+          className="px-[19px] w-[200px] h-[45px] rounded-s-[10px] focus:outline-none peer/name border border-white hover:border-[#0078EE] transition-all duration-150"
         />
         {!isReadonly && (
           <p
