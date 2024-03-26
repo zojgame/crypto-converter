@@ -1,11 +1,11 @@
 import { useState } from "react";
-import Selector from "../components/Selector";
-import Button from "../components/Button";
+import Selector from "./Selector";
+import Button from "./Button";
 import ArrowsRightLeft from "../icons/ArrowsRightLeftIcon";
 import CrossIcon from "../icons/CrossIcon";
 import { getSymbolPrice } from "../api/binanceApi";
 import { DataRequest } from "../types/DataRequest";
-import LoaderModal from "../components/LoaderModal";
+import LoaderModal from "./LoaderModal";
 import { SYMBOL_ITEMS } from "../constants/symbolItems";
 import { calculatePrice, calculateInvertedPrice } from "../constants/calculate";
 
@@ -69,7 +69,7 @@ function MainPage() {
   return (
     <>
       {modal}
-      <div className="bg-black h-screen flex justify-center items-center">
+      <div className="bg-slate-500 h-screen flex justify-center items-center">
         <div className="flex gap-4 flex-wrap justify-center">
           <Selector
             onChange={handleOnFirstInputChange}
